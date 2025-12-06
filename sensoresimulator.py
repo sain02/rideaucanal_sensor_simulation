@@ -3,10 +3,8 @@ import os
 import json
 import random
 import time
-from azure.iot.device import IoTHubDeviceClient, Message
-
-# Load connection string from environment variable for security.
-# Optionally load from a local .env (see instructions below).
+from dotenv import load_dotenv
+load_dotenv()
 CONNECTION_STRING = os.getenv("IOTHUB_DEVICE_CONNECTION_STRING")
 
 def simulate_sensor_data():
