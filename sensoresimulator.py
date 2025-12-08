@@ -1,51 +1,53 @@
-
 import os
 import json
 import random
 import time
+from datetime import datetime, timezone
 from dotenv import load_dotenv
+from azure.iot.device import IoTHubDeviceClient, Message
+
+# Load .env file
 load_dotenv()
+
+# Get device connection string
 CONNECTION_STRING = os.getenv("IOTHUB_DEVICE_CONNECTION_STRING")
 
-def simulate_sensor_data():
-    """Simulate sensor readings."""
-    temperature = round(random.uniform(20.0, 35.0), 2)
-    humidity = round(random.uniform(40.0, 90.0), 2)
-    location = "Room-1"
-    return {
-        "temperature": temperature,
-        "humidity": humidity,
-        "location": location,
-        "timestamp": time.time(),
+def generate_sensor_data():
+    """Generate random readings for Rideau Canal sensors."""
+    payload = {
+        "location": "DowsLake",   # OR change per device
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "iceThickness": round(random.uniform(20.0, 40.0), 2),
+        "surfaceTemperature": round(random.uniform(-10.0, 2.0), 2),
+        "snowAccumulation": round(random.uniform(0.0, 6.0), 2),
+        "externalTemperature": round(random.uniform(-20.0, 5.0), 2)
     }
+    return payload
 
 def main():
-    if not CONNECTION_STRING:
-        raise RuntimeError(
-            "IOTHUB_DEVICE_CONNECTION_STRING is not set. "
-            "Set it in your environment (or .env) before running."
-        )
-
     print("Connecting to Azure IoT Hub...")
     client = IoTHubDeviceClient.create_from_connection_string(CONNECTION_STRING)
 
+    client.connect()
+    print("Connected! Sending messages every 10 seconds...\n")
+
     try:
         while True:
-            telemetry = simulate_sensor_data()
-            # Send JSON payload with content type for clarity
-            payload = json.dumps(telemetry)
-            message = Message(payload)
+            data = generate_sensor_data()
+            message = Message(json.dumps(data))
             message.content_encoding = "utf-8"
             message.content_type = "application/json"
 
+            print("Sending:", data)
             client.send_message(message)
-            print("Sent:", payload)
-            time.sleep(3)
+
+            time.sleep(10)
+
     except KeyboardInterrupt:
-        print("\nStopping…")
+        print("Stopped.")
+
     finally:
         client.shutdown()
-        print("Disconnected.")
 
 if __name__ == "__main__":
     main()
