@@ -21,7 +21,12 @@ Every 10 seconds, each simulated device sends a JSON message to **Azure IoT Hub*
 - **dotenv for environment variable management**
 
 ---
+## AI Tools Used
+- **Tool:** ChatGPT / GitHub Copilot / etc.
+- **Purpose:** Code generation, debugging, documentation
 
+
+---
 ## Prerequisites
 Before running the simulator, make sure you have:
 
