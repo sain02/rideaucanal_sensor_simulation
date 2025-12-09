@@ -41,7 +41,7 @@ Before running the simulator, make sure you have:
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/rideau-canal-sensor-simulation.git
+git clone https://github.com/sain02/rideaucanal_sensor_simulation.git  
 cd rideau-canal-sensor-simulation
 
 
